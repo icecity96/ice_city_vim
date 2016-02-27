@@ -4,6 +4,7 @@ set runtimepath+=~/.vim/bundle/vundle/
 call vundle#begin()
 Plugin 'gmarik/vundle'
 Plugin 'jeaye/color_coded' "高亮变量，宏
+Plugin 'vim-scripts/fcitx.vim'
 Plugin 'kmyk/sdl2.vim'
 Plugin 'rdnetto/YCM-Generator'
 Plugin 'tpope/vim-fugitive'
@@ -34,7 +35,9 @@ filetype plugin indent on "
 " airline {{{ "
 set laststatus=2	"总是显示状态栏(always show status-line)
 set t_Co=256		"neovim 不需要设置(if using neovim this option shouldn't be set)
-let g:airline_symbols = {} "支持Unicode，Powerfont
+if !exists('g:airline_symbols')
+	let g:airline_symbols = {}
+endif
 let g:airline#extensions#bufferline#enable = 1
 let g:airline#extensions#bufferline#overwrite_variables = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -42,13 +45,16 @@ let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#buffer_nr_show=1
 let g:airline#extensions#branch#enable = 1
-let g:airline#extensions#branch#empty_message = ''                    
 let g:airline#extensions#branch#displayed_head_limit = 10
 let g:airline#extensions#branch#format = 0
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#ctrlp#color_template = 'insert'
-let g:airline#extensions#ctrlp#show_adjacent_modes = 1
+let g:airline#extensions#whitespace#enabled = 1
+let g:airline#extensions#whitespace#symbol = '!'
+let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long' ]
+let g:airline#extensions#whitespace#trailing_format = 'trailing[%s]'
+let g:airline#extensions#whitespace#mixed_indent_format = 'mixed-indent[%s]'
+let g:airline#extensions#whitespace#long_format = 'long[%s]'
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 let g:airline_symbols.branch = ''
@@ -173,3 +179,11 @@ set relativenumber
 "高亮当前行
 set cursorline
 " }}} settings "
+" Add x permetion {{{ "
+function! ICaddx()
+	if strpart(getline(1),0,2) == "#!"
+		call system("chmod +x ".bufname("%"))
+	endif
+endfunction
+autocmd BufWritePost * :call ICaddx()
+" }}} Add x permetion "
