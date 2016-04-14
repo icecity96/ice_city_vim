@@ -2,9 +2,11 @@
 filetype off 
 set runtimepath+=~/.vim/bundle/vundle/
 call vundle#begin()
+Plugin 'xuhdev/vim-latex-live-preview'
 Plugin 'gmarik/vundle'
 Plugin 'jeaye/color_coded' "高亮变量，宏
 Plugin 'vim-scripts/fcitx.vim'
+Plugin 'icecity96/IC_VimL_Quick_Help'
 Plugin 'kmyk/sdl2.vim'
 Plugin 'rdnetto/YCM-Generator'
 Plugin 'tpope/vim-fugitive'
@@ -29,6 +31,7 @@ Plugin 'majutsushi/tagbar'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'fencview.vim' "编码格式
 Plugin 'vimcn/vimcdoc' "中文帮助文档，建议还是直接看英文的，如果感觉英文不好理解再参考下翻译
+Plugin 'suan/vim-instant-markdown'
 call vundle#end()
 filetype plugin indent on "
 " }}} Fold description "
@@ -75,10 +78,12 @@ nnoremap <leader>cp "+gp
 autocmd filetype cpp map <F5> <Esc>:w!<CR>:!clang++ -std=c++11 % -o %< <CR>
 autocmd filetype c map <F5> <Esc>:w!<CR>:!clang  % -o %< -lm <CR>
 autocmd filetype c map <F6> <Esc>:w!<CR>:!clang  -g % -o %< -lm <CR>
-autocmd filetype cpp map <F6> <Esc>:w!<CR>:!clang++ -std=c++11 -g % -o %< -lm <CR>
+autocmd filetype cpp map <F6> <Esc>:w!<CR>:!clang++ -std=c++11 -g -D DEBUG % -o %< -lm <CR>
 "使用空格来折叠和展开
 nnoremap <space> za
 autocmd filetype vim setlocal foldmethod=marker
+"快速将单词转换成大写
+noremap <C-u> <esc>bvwhUw
 " }}} basic map settings "
 " YouCompleteMe {{{ "
 " More options see the help document of YCM 
@@ -88,6 +93,7 @@ auto InsertLeave * if pumvisible()==0 | pclose | endif
 inoremap <expr><CR> pumvisible()?'<C-y>':'<CR>'
 "默认YCM配置文件路径
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
 "提供python补全
 let g:ycm_python_binary_path = '/usr/bin/python'
 "获取一个变量的类型，支持c,cpp,oc,js
@@ -117,8 +123,8 @@ let g:ycm_key_list_previous_completion = ['<C-n>','<Up>']
 " }}} YouCompleteMe "
 " syntastic {{{ "
 let g:syntastic_check_on_open = 1
-let g:syntastic_cpp_complier='clang++'
-let g:syntastic_cpp_complier_options='-std=c++11 -stdlib=libc++'
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 " }}} syntastic "
 " Tagbar {{{ "
 " learn more :h tagbar
@@ -143,8 +149,9 @@ nnoremap <leader>j <Plug>(easymotion-j)
 nnoremap <leader>k <Plug>(easymotion-k)
 " }}} EasyMotion "
 " settings {{{ "
-set showcmd ""显示命令
-set number ""显示行号
+""显示命令
+set showcmd 
+set number
 set encoding=utf8
 set nocompatible "关闭vi兼容
 set tabstop=4	"设定tab = 4
@@ -157,6 +164,7 @@ syntax on
 set hlsearch incsearch
 ""背景
 colorscheme molokai
+
 let g:molokai_original = 1
 ""隐藏状态栏，美观一下
 set guioptions=P
@@ -178,8 +186,12 @@ set guifont=DejaVu\ Sans\ Mono\ 11
 set relativenumber
 "高亮当前行
 set cursorline
+set encoding=utf-8
+set fileencoding=utf-8
+let g:tex_flavor = "latex"
 " }}} settings "
 " Add x permetion {{{ "
+" 为脚本增加x权限，默认脚本是用#！开头
 function! ICaddx()
 	if strpart(getline(1),0,2) == "#!"
 		call system("chmod +x ".bufname("%"))
@@ -187,3 +199,8 @@ function! ICaddx()
 endfunction
 autocmd BufWritePost * :call ICaddx()
 " }}} Add x permetion "
+" IC_VimL_Quick_help {{{ "
+let g:IC_quick_help_language = "@cn"
+" }}} IC_VimL_Quick_help "
+" function {{{ "
+" }}} function "
